@@ -19,13 +19,14 @@ public class UserServiceTest {
     public void testAddUser(){
 
         User user = new User();
-        user.setUsername("测试用户");
-        user.setUserAccount("testAccount");
+        user.setUsername("leorxx");
+        user.setUserAccount("2233198920");
         user.setAvatarUrl("https://example.com/avatar.png");
         user.setGender(0);
         user.setUserPassword("12345678");
         user.setPhone("13800138000");
         user.setEmail("test@example.com");
+        user.setRole(1);
 
         boolean result = userService.save(user);
         System.out.println(user.getId());

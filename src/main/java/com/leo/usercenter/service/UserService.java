@@ -10,6 +10,10 @@ import jakarta.servlet.http.HttpServletRequest;
 * @createDate 2026-03-09 20:54:20
 */
 public interface UserService extends IService<User> {
+
+
+
+
     /**
      * 用户注册
      * @param userAccount 账户

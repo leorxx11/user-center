@@ -7,7 +7,7 @@ import lombok.Data;
 
 /**
  * 用户表
- * @TableName user
+ * @TableName  user
  */
 @TableName(value ="user")
 @Data
@@ -73,4 +73,9 @@ public class User {
      */
     @TableLogic
     private Integer isDelete;
+
+    /**
+     * 角色 0-普通用户 1-管理员
+     */
+    private Integer role;
 }

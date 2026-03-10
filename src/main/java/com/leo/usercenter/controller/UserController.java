@@ -67,6 +67,23 @@ public class UserController {
         return user != null && user.getUserRole() != null && user.getUserRole() == ADMIN_ROLE;
     }
 
+    @GetMapping("/current")
+    public User getCurrentUser(HttpServletRequest request) {
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        if (currentUser == null) return null;
+        // 重新查询用户信息（保证数据最新）
+        long userId = currentUser.getId();
+        User user = userService.getById(userId);
+        return userService.getSafetyUser(user);
+    }
+
+    @PostMapping("/logout")
+    public Integer userLogout(HttpServletRequest request) {
+        if (request == null) return null;
+        return userService.userLogout(request);
+    }
+
     @GetMapping("/search")
     public List<User> searchUsers(@RequestParam String username, HttpServletRequest request) {
 

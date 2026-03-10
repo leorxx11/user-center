@@ -77,5 +77,5 @@ public class User {
     /**
      * 角色 0-普通用户 1-管理员
      */
-    private Integer role;
+    private Integer userRole;
 }

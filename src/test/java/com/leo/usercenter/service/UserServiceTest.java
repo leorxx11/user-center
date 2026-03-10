@@ -26,7 +26,7 @@ public class UserServiceTest {
         user.setUserPassword("12345678");
         user.setPhone("13800138000");
         user.setEmail("test@example.com");
-        user.setRole(1);
+        user.setUserRole(1);
 
         boolean result = userService.save(user);
         System.out.println(user.getId());

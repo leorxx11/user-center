@@ -2,7 +2,6 @@ package com.leo.usercenter.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.leo.usercenter.constant.UserConstant;
 import com.leo.usercenter.model.domain.User;
 import com.leo.usercenter.model.domain.request.UserLoginRequest;
 import com.leo.usercenter.model.domain.request.UserRegisterRequest;
@@ -14,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.leo.usercenter.constant.UserConstant.ADMIN_ROLE;
+import static com.leo.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 
 
 /**
@@ -22,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/user")
-public class UserController implements UserConstant {
+public class UserController {
 
     @Resource
     private UserService userService;
@@ -61,7 +64,7 @@ public class UserController implements UserConstant {
         //鉴权
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User user = (User) userObj;
-        return user != null && user.getRole() == ADMIN_ROLE;
+        return user != null && user.getUserRole() != null && user.getUserRole() == ADMIN_ROLE;
     }
 
     @GetMapping("/search")
@@ -73,7 +76,9 @@ public class UserController implements UserConstant {
         if(StringUtils.isNotEmpty(username)){
             queryWrapper.like("username",username);
         }
-        return userService.list(queryWrapper);
+
+        List<User> userList = userService.list(queryWrapper);
+        return userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
     }
 
     @PostMapping("/delete")

@@ -6,6 +6,7 @@ import com.leo.usercenter.model.domain.User;
 import com.leo.usercenter.service.UserService;
 import com.leo.usercenter.mapper.UserMapper;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +26,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
 
+
     /**
      * 盐值，混淆加密
      */
     private static final String SALT = "leo";
+
+    /**
+     * 用户登录态键
+     */
+    private static final String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword){
@@ -63,8 +70,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return user.getId();
     }
 
+
     @Override
-    public User doLogin(String userAccount, String userPassword){
+    public User userLogin(String userAccount, String userPassword, HttpServletRequest request){
         //检验
         if(StringUtils.isAllBlank(userAccount, userPassword)) return null;
         if(userAccount.length() < 4) return null;
@@ -89,11 +97,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return null;
         }
 
+        //用户脱敏
+        User safetyUser =  new User();
+        safetyUser.setId(user.getId());
+        safetyUser.setUsername(user.getUsername());
+        safetyUser.setUserAccount(user.getUserAccount());
+        safetyUser.setAvatarUrl(user.getAvatarUrl());
+        safetyUser.setGender(user.getGender());
+        safetyUser.setPhone(user.getPhone());
+        safetyUser.setEmail(user.getEmail());
+        safetyUser.setUserStatus(user.getUserStatus());
+        safetyUser.setCreateTime(user.getCreateTime());
+
         //记录用户登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
 
 
-
-        return user;
+        return safetyUser;
     }
 
 
